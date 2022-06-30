@@ -32,7 +32,7 @@ namespace CinemaWebAPI.Controllers
         [HttpGet]
         public IEnumerable<Endereco> RecuperarEnderecos()
         {
-            return _context.Enderecos;
+            return _context.Enderecos.ToList();
         }
 
         [HttpGet("{idEndereco}")]
