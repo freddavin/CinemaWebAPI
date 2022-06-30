@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CinemaWebAPI.Migrations
 {
-    public partial class inicial : Migration
+    public partial class RecriandoDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -31,6 +31,21 @@ namespace CinemaWebAPI.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Gerentes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Nome = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Gerentes", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Cinemas",
                 columns: table => new
                 {
@@ -38,7 +53,8 @@ namespace CinemaWebAPI.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    EnderecoId = table.Column<int>(type: "int", nullable: false)
+                    EnderecoId = table.Column<int>(type: "int", nullable: false),
+                    GerenteId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -49,6 +65,12 @@ namespace CinemaWebAPI.Migrations
                         principalTable: "Enderecos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Cinemas_Gerentes_GerenteId",
+                        column: x => x.GerenteId,
+                        principalTable: "Gerentes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -57,6 +79,11 @@ namespace CinemaWebAPI.Migrations
                 table: "Cinemas",
                 column: "EnderecoId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cinemas_GerenteId",
+                table: "Cinemas",
+                column: "GerenteId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -66,6 +93,9 @@ namespace CinemaWebAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Enderecos");
+
+            migrationBuilder.DropTable(
+                name: "Gerentes");
         }
     }
 }

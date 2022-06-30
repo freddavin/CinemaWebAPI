@@ -2,12 +2,12 @@
 
 namespace CinemaWebAPI.ViewModels
 {
-    public class CinemaReadViewModel
+    public class GerenteReadViewModel
     {
         public int Id { get; set; }
         public string Nome { get; set; }
 
-        public virtual Endereco Endereco { get; set; }
-        public virtual Gerente Gerente { get; set; }
+        public virtual List<Cinema> CinemasGerenciados { get; set; }
+
     }
 }

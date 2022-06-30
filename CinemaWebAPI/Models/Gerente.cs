@@ -3,17 +3,15 @@ using System.Text.Json.Serialization;
 
 namespace CinemaWebAPI.Models
 {
-    public class Endereco
+    public class Gerente
     {
         [Key]
         [Required]
         public int Id { get; set; }
-        public string Logradouro { get; set; }
-        public string Bairro { get; set; }
-        public int Numero { get; set; }
+        public string Nome { get; set; }
 
         [JsonIgnore]
-        public virtual Cinema Cinema { get; set; }
+        public virtual List<Cinema> CinemasGerenciados { get; set; }
 
     }
 }

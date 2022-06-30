@@ -19,8 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options
                                     .UseLazyLoadingProxies()
                                     .UseMySql(serverString, serverVersion)
                                     .LogTo(Console.WriteLine, LogLevel.Information)
-                                    .EnableSensitiveDataLogging()
-                                    .EnableDetailedErrors());
+                                    .EnableSensitiveDataLogging());
 
 var app = builder.Build();
 

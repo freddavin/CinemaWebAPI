@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using CinemaWebAPI.Context;
 using CinemaWebAPI.Models;
 using CinemaWebAPI.ViewModels;
