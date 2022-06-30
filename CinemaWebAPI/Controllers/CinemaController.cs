@@ -30,9 +30,11 @@ namespace CinemaWebAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Cinema> RecuperarCinemas()
+        public IEnumerable<CinemaReadViewModel> RecuperarCinemas()
         {
-            return _context.Cinemas.ToList();
+            var cinemas = _context.Cinemas.ToList();
+            var cinemasReadViewModel = _mapper.Map<List<CinemaReadViewModel>>(cinemas);
+            return cinemasReadViewModel;
         }
 
         [HttpGet("{idCinema}")]

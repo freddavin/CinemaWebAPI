@@ -7,7 +7,7 @@ namespace CinemaWebAPI.ViewModels
         public int Id { get; set; }
         public string Nome { get; set; }
 
-        public virtual List<Cinema> CinemasGerenciados { get; set; }
+        public virtual object CinemasGerenciados { get; set; }
 
     }
 }

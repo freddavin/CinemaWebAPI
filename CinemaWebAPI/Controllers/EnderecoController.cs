@@ -30,9 +30,11 @@ namespace CinemaWebAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Endereco> RecuperarEnderecos()
+        public IEnumerable<EnderecoReadViewModel> RecuperarEnderecos()
         {
-            return _context.Enderecos.ToList();
+            var enderecos = _context.Enderecos.ToList();
+            var enderecosReadViewModel = _mapper.Map<List<EnderecoReadViewModel>>(enderecos);
+            return enderecosReadViewModel;
         }
 
         [HttpGet("{idEndereco}")]

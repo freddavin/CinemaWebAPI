@@ -7,9 +7,7 @@ namespace CinemaWebAPI.ViewModels
     {
         public string Nome { get; set; }
 
-        [Required(ErrorMessage = "O campo EnderecoId é obrigatório.")]
         public int EnderecoId { get; set; }
-        [Required(ErrorMessage = "O campo GerenteId é obrigatório.")]
         public int GerenteId { get; set; }
 
     }

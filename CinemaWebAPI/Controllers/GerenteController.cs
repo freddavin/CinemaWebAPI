@@ -31,9 +31,11 @@ namespace CinemaWebAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Gerente> RecuperarGerentes()
+        public IEnumerable<GerenteReadViewModel> RecuperarGerentes()
         {
-            return _context.Gerentes.ToList();
+            var gerentes = _context.Gerentes.ToList();
+            var gerentesReadViewModel = _mapper.Map<List<GerenteReadViewModel>>(gerentes);
+            return gerentesReadViewModel;
         }
 
         [HttpGet("{idGerente}")]
