@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace CinemaWebAPI.Models
 {
@@ -16,5 +17,8 @@ namespace CinemaWebAPI.Models
         [Range(1, 600, ErrorMessage = "A duração deve ter no mínimo 1 minuto e no máximo 600.")]
         public int Duracao { get; set; }
         public int ClassificacaoEtaria { get; set; }
+
+        [JsonIgnore]
+        public virtual List<Sessao> Sessoes { get; set; }
     }
 }

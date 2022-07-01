@@ -30,11 +30,26 @@ namespace CinemaWebAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<CinemaReadViewModel> RecuperarCinemas()
+        public IActionResult RecuperarCinemas([FromQuery] string nomeDoFilme)
         {
-            var cinemas = _context.Cinemas.ToList();
-            var cinemasReadViewModel = _mapper.Map<List<CinemaReadViewModel>>(cinemas);
-            return cinemasReadViewModel;
+            List<Cinema> cinemas;
+            if (string.IsNullOrEmpty(nomeDoFilme))
+            {
+                cinemas = _context.Cinemas.ToList();
+            }
+            else
+            {
+                cinemas = _context.Sessoes
+                    .Where(s => s.Filme.Titulo == nomeDoFilme)
+                    .Select(s => s.Cinema)
+                    .ToList();
+            }
+            if (cinemas != null)
+            {
+                var cinemasReadViewModel = _mapper.Map<List<CinemaReadViewModel>>(cinemas);
+                return Ok(cinemasReadViewModel);
+            }
+            return NotFound();
         }
 
         [HttpGet("{idCinema}")]

@@ -31,17 +31,29 @@ namespace CinemaWebAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<FilmeReadViewModel> RecuperarFilmes()
+        public IActionResult RecuperarFilmes([FromQuery] int? classificacaoEtaria = null)
         {
-            var filmes = _context.Filmes.ToList();
-            var filmesReadViewModel = _mapper.Map<List<FilmeReadViewModel>>(filmes);
-            return filmesReadViewModel;
+            List<Filme> filmes;
+            if (classificacaoEtaria == null)
+            {
+                filmes = _context.Filmes.ToList();
+            } else
+            {
+                filmes = _context.Filmes.Where(filme => filme.ClassificacaoEtaria <= classificacaoEtaria).ToList();
+            }
+            if (filmes != null)
+            {
+                var filmesReadViewModel = _mapper.Map<List<FilmeReadViewModel>>(filmes);
+                return Ok(filmesReadViewModel);
+            }
+            return NotFound();
+
         }
 
-        [HttpGet("{idFilmes}")]
-        public IActionResult RecuperarFilmePorId(int idFilmes)
+        [HttpGet("{idFilme}")]
+        public IActionResult RecuperarFilmePorId(int idFilme)
         {
-            var filme = _context.Filmes.FirstOrDefault(f => f.Id == idFilmes);
+            var filme = _context.Filmes.FirstOrDefault(f => f.Id == idFilme);
             if (filme != null)
             {
                 var filmeReadViewModel = _mapper.Map<FilmeReadViewModel>(filme);

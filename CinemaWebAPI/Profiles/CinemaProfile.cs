@@ -9,7 +9,10 @@ namespace CinemaWebAPI.Profiles
         public CinemaProfile()
         {
             CreateMap<CinemaCreateViewModel, Cinema>();
-            CreateMap<Cinema, CinemaReadViewModel>();
+            CreateMap<Cinema, CinemaReadViewModel>()
+                .ForMember(c => c.Sessoes, options => options
+                .MapFrom(c => c.Sessoes.Select(
+                    c => new { c.Id, c.Filme })));
         }
     }
 }

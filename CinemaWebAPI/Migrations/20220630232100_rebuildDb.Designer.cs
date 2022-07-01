@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CinemaWebAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220630140643_RecriandoDb")]
-    partial class RecriandoDb
+    [Migration("20220630232100_rebuildDb")]
+    partial class rebuildDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -68,6 +68,36 @@ namespace CinemaWebAPI.Migrations
                     b.ToTable("Enderecos");
                 });
 
+            modelBuilder.Entity("CinemaWebAPI.Models.Filme", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClassificacaoEtaria")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Diretor")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("Duracao")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Genero")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Filmes");
+                });
+
             modelBuilder.Entity("CinemaWebAPI.Models.Gerente", b =>
                 {
                     b.Property<int>("Id")
@@ -81,6 +111,27 @@ namespace CinemaWebAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Gerentes");
+                });
+
+            modelBuilder.Entity("CinemaWebAPI.Models.Sessao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("CinemaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FilmeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CinemaId");
+
+                    b.HasIndex("FilmeId");
+
+                    b.ToTable("Sessoes");
                 });
 
             modelBuilder.Entity("CinemaWebAPI.Models.Cinema", b =>
@@ -102,10 +153,39 @@ namespace CinemaWebAPI.Migrations
                     b.Navigation("Gerente");
                 });
 
+            modelBuilder.Entity("CinemaWebAPI.Models.Sessao", b =>
+                {
+                    b.HasOne("CinemaWebAPI.Models.Cinema", "Cinema")
+                        .WithMany("Sessoes")
+                        .HasForeignKey("CinemaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CinemaWebAPI.Models.Filme", "Filme")
+                        .WithMany("Sessoes")
+                        .HasForeignKey("FilmeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cinema");
+
+                    b.Navigation("Filme");
+                });
+
+            modelBuilder.Entity("CinemaWebAPI.Models.Cinema", b =>
+                {
+                    b.Navigation("Sessoes");
+                });
+
             modelBuilder.Entity("CinemaWebAPI.Models.Endereco", b =>
                 {
                     b.Navigation("Cinema")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("CinemaWebAPI.Models.Filme", b =>
+                {
+                    b.Navigation("Sessoes");
                 });
 
             modelBuilder.Entity("CinemaWebAPI.Models.Gerente", b =>

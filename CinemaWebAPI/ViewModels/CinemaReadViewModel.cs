@@ -9,5 +9,7 @@ namespace CinemaWebAPI.ViewModels
 
         public virtual Endereco Endereco { get; set; }
         public virtual Gerente Gerente { get; set; }
+
+        public virtual object Sessoes { get; set; }
     }
 }
