@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CinemaWebAPI.Context;
 using CinemaWebAPI.Models;
+using CinemaWebAPI.Services;
 using CinemaWebAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,39 +12,38 @@ namespace CinemaWebAPI.Controllers
 
     public class SessaoController : ControllerBase
     {
-        private AppDbContext _context;
-        private IMapper _mapper;
+        private SessaoService _sessaoService;
 
-        public SessaoController(AppDbContext context, IMapper mapper)
+        public SessaoController(SessaoService sessaoService)
         {
-            _context = context;
-            _mapper = mapper;
+            _sessaoService = sessaoService;
         }
 
         [HttpPost]
         public IActionResult AdicionarSessao([FromBody] SessaoCreateViewModel sessaoCreateViewModel)
         {
-            var sessao = _mapper.Map<Sessao>(sessaoCreateViewModel);
-            _context.Sessoes.Add(sessao);
-            _context.SaveChanges();
-            return CreatedAtAction(nameof(RecuperarSessaoPorId), new { idSessao = sessao.Id }, sessao);
+            SessaoReadViewModel sessaoReadViewModel = _sessaoService.AdicionarSessao(sessaoCreateViewModel);
+            return CreatedAtAction(nameof(RecuperarSessaoPorId), 
+                new { idSessao = sessaoReadViewModel.Id }, sessaoReadViewModel);
         }
 
         [HttpGet]
-        public IEnumerable<SessaoReadViewModel> RecuperarSessoes()
+        public IActionResult RecuperarSessoes()
         {
-            var sessoes = _context.Sessoes.ToList();
-            var sessoesReadViewModel = _mapper.Map<List<SessaoReadViewModel>>(sessoes);
-            return sessoesReadViewModel;
+            List<SessaoReadViewModel> sessoesReadViewList = _sessaoService.RecuperarSessoes();
+            if (sessoesReadViewList != null)
+            {
+                return Ok(sessoesReadViewList);
+            }
+            return NotFound();
         }
 
         [HttpGet("{idSessao}")]
         public IActionResult RecuperarSessaoPorId(int idSessao)
         {
-            var sessao = _context.Sessoes.FirstOrDefault(s => s.Id == idSessao);
-            if (sessao != null)
+            SessaoReadViewModel sessaoReadViewModel = _sessaoService.RecuperarSessaoPorId(idSessao);
+            if (sessaoReadViewModel != null)
             {
-                var sessaoReadViewModel = _mapper.Map<SessaoReadViewModel>(sessao);
                 return Ok(sessaoReadViewModel);
             }
             return NotFound();

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using CinemaWebAPI.Context;
 using CinemaWebAPI.Models;
 using CinemaWebAPI.ViewModels;
+using CinemaWebAPI.Services;
 
 namespace CinemaWebAPI.Controllers
 {
@@ -11,39 +12,38 @@ namespace CinemaWebAPI.Controllers
 
     public class EnderecoController : ControllerBase
     {
-        private AppDbContext _context;
-        private IMapper _mapper;
+        private EnderecoService _enderecoService;
 
-        public EnderecoController(AppDbContext context, IMapper mapper)
+        public EnderecoController(EnderecoService enderecoService)
         {
-            _context = context;
-            _mapper = mapper;
+            _enderecoService = enderecoService;
         }
 
         [HttpPost]
-        public IActionResult CadastrarEndereco([FromBody] EnderecoCreateViewModel enderecoCreateViewModel)
+        public IActionResult AdicionarEndereco([FromBody] EnderecoCreateViewModel enderecoCreateViewModel)
         {
-            var endereco = _mapper.Map<Endereco>(enderecoCreateViewModel);
-            _context.Enderecos.Add(endereco);
-            _context.SaveChanges();
-            return CreatedAtAction(nameof(RecuperarEnderecoPorId), new { idEndereco = endereco.Id }, endereco);
+            EnderecoReadViewModel enderecoReadViewModel = _enderecoService.AdicionarEndereco(enderecoCreateViewModel);
+            return CreatedAtAction(nameof(RecuperarEnderecoPorId), 
+                new { idEndereco = enderecoReadViewModel.Id }, enderecoReadViewModel);
         }
 
         [HttpGet]
-        public IEnumerable<EnderecoReadViewModel> RecuperarEnderecos()
+        public IActionResult RecuperarEnderecos()
         {
-            var enderecos = _context.Enderecos.ToList();
-            var enderecosReadViewModel = _mapper.Map<List<EnderecoReadViewModel>>(enderecos);
-            return enderecosReadViewModel;
+            List<EnderecoReadViewModel>? enderecosReadViewModel = _enderecoService.RecuperarEnderecos();
+            if (enderecosReadViewModel != null)
+            {
+                return Ok(enderecosReadViewModel);
+            }
+            return NotFound();
         }
 
         [HttpGet("{idEndereco}")]
         public IActionResult RecuperarEnderecoPorId(int idEndereco)
         {
-            var endereco = _context.Enderecos.FirstOrDefault(e => e.Id == idEndereco);
-            if (endereco != null)
+            EnderecoReadViewModel enderecoReadViewModel = _enderecoService.RecuperarEnderecoPorId(idEndereco);
+            if (enderecoReadViewModel != null)
             {
-                var enderecoReadViewModel = _mapper.Map<EnderecoReadViewModel>(endereco);
                 return Ok(enderecoReadViewModel);
             }
             return NotFound();

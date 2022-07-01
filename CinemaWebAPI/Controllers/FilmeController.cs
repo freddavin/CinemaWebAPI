@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using CinemaWebAPI.Context;
 using CinemaWebAPI.Models;
+using CinemaWebAPI.Services;
 using CinemaWebAPI.ViewModels;
+using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CinemaWebAPI.Controllers
@@ -11,53 +13,61 @@ namespace CinemaWebAPI.Controllers
 
     public class FilmeController : ControllerBase
     {
-        private AppDbContext _context;
-        private IMapper _mapper;
+        private FilmeService _filmeService;
 
-        public FilmeController(AppDbContext context, IMapper mapper)
+        public FilmeController(FilmeService filmeService)
         {
-            _context = context;
-            _mapper = mapper;
+            _filmeService = filmeService;
         }
 
         [HttpPost]
         public IActionResult AdicionarFilme([FromBody] FilmeCreateViewModel filmeCreateViewModel)
         {
-            var filme = _mapper.Map<Filme>(filmeCreateViewModel);
-
-            _context.Filmes.Add(filme);
-            _context.SaveChanges();
-            return CreatedAtAction(nameof(RecuperarFilmePorId), new { idFilme = filme.Id }, filme);
+            FilmeReadViewModel filmeReadViewModel = _filmeService.AdicionarFilme(filmeCreateViewModel);
+            return CreatedAtAction(nameof(RecuperarFilmePorId), 
+                new { idFilme = filmeReadViewModel.Id }, filmeReadViewModel);
         }
 
         [HttpGet]
         public IActionResult RecuperarFilmes([FromQuery] int? classificacaoEtaria = null)
         {
-            List<Filme> filmes;
-            if (classificacaoEtaria == null)
+            List<FilmeReadViewModel> filmeReadViewModel = _filmeService.RecuperarFilmes(classificacaoEtaria);
+            if (filmeReadViewModel != null)
             {
-                filmes = _context.Filmes.ToList();
-            } else
-            {
-                filmes = _context.Filmes.Where(filme => filme.ClassificacaoEtaria <= classificacaoEtaria).ToList();
-            }
-            if (filmes != null)
-            {
-                var filmesReadViewModel = _mapper.Map<List<FilmeReadViewModel>>(filmes);
-                return Ok(filmesReadViewModel);
+                return Ok(filmeReadViewModel);
             }
             return NotFound();
-
         }
 
         [HttpGet("{idFilme}")]
         public IActionResult RecuperarFilmePorId(int idFilme)
         {
-            var filme = _context.Filmes.FirstOrDefault(f => f.Id == idFilme);
-            if (filme != null)
+            FilmeReadViewModel filmeReadViewModel = _filmeService.RecuperarFilmePorId(idFilme);
+            if (filmeReadViewModel != null)
             {
-                var filmeReadViewModel = _mapper.Map<FilmeReadViewModel>(filme);
                 return Ok(filmeReadViewModel);
+            }
+            return NotFound();
+        }
+
+        [HttpPut("{idFilme}")]
+        public IActionResult AtualizarFilme(int idFilme, [FromBody] FilmeCreateViewModel filmeAlterado)
+        {
+            Result resultadoAlteracao = _filmeService.AtualizarFilme(idFilme, filmeAlterado);
+            if (resultadoAlteracao.IsSuccess)
+            {
+                return NoContent();
+            }
+            return NotFound();
+        }
+
+        [HttpDelete("{idFilme}")]
+        public IActionResult RemoverFilme(int idFilme)
+        {
+            Result resultadoRemocao = _filmeService.RemoverFilme(idFilme);
+            if (resultadoRemocao.IsSuccess)
+            {
+                return NoContent();
             }
             return NotFound();
         }

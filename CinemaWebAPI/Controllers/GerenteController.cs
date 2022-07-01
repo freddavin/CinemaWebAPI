@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CinemaWebAPI.Context;
 using CinemaWebAPI.Models;
+using CinemaWebAPI.Services;
 using CinemaWebAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,40 +12,38 @@ namespace CinemaWebAPI.Controllers
 
     public class GerenteController : ControllerBase
     {
-        private AppDbContext _context;
-        private IMapper _mapper;
+        private GerenteService _gerenteService;
 
-        public GerenteController(AppDbContext context, IMapper mapper)
+        public GerenteController(GerenteService gerenteService)
         {
-            _context = context;
-            _mapper = mapper;
+            _gerenteService = gerenteService;
         }
 
         [HttpPost]
         public IActionResult AdicionarGerente([FromBody] GerenteCreateViewModel gerenteCreateViewModel)
         {
-            var gerente = _mapper.Map<Gerente>(gerenteCreateViewModel);
-
-            _context.Gerentes.Add(gerente);
-            _context.SaveChanges();
-            return CreatedAtAction(nameof(RecuperarGerentePorId), new { idGerente = gerente.Id }, gerente);
+            GerenteReadViewModel gerenteReadViewModel = _gerenteService.AdicionarGerente(gerenteCreateViewModel);
+            return CreatedAtAction(nameof(RecuperarGerentePorId), 
+                new { idGerente = gerenteReadViewModel.Id }, gerenteReadViewModel);
         }
 
         [HttpGet]
-        public IEnumerable<GerenteReadViewModel> RecuperarGerentes()
+        public IActionResult RecuperarGerentes()
         {
-            var gerentes = _context.Gerentes.ToList();
-            var gerentesReadViewModel = _mapper.Map<List<GerenteReadViewModel>>(gerentes);
-            return gerentesReadViewModel;
+            List<GerenteReadViewModel> gerentesReadViewModel = _gerenteService.RecuperarGerentes();
+            if (gerentesReadViewModel != null)
+            {
+                return Ok(gerentesReadViewModel);
+            }
+            return NotFound();
         }
 
         [HttpGet("{idGerente}")]
         public IActionResult RecuperarGerentePorId(int idGerente)
         {
-            var gerente = _context.Gerentes.FirstOrDefault(g => g.Id == idGerente);
-            if (gerente != null)
+            GerenteReadViewModel gerenteReadViewModel = _gerenteService.RecuperarGerentePorId(idGerente);
+            if (gerenteReadViewModel != null)
             {
-                var gerenteReadViewModel = _mapper.Map<GerenteReadViewModel>(gerente);
                 return Ok(gerenteReadViewModel);
             }
             return NotFound();
