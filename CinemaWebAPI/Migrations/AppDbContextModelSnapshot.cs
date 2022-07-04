@@ -41,7 +41,7 @@ namespace CinemaWebAPI.Migrations
 
                     b.HasIndex("GerenteId");
 
-                    b.ToTable("Cinemas");
+                    b.ToTable("Cinemas", (string)null);
                 });
 
             modelBuilder.Entity("CinemaWebAPI.Models.Endereco", b =>
@@ -63,7 +63,7 @@ namespace CinemaWebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Enderecos");
+                    b.ToTable("Enderecos", (string)null);
                 });
 
             modelBuilder.Entity("CinemaWebAPI.Models.Filme", b =>
@@ -93,7 +93,7 @@ namespace CinemaWebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Filmes");
+                    b.ToTable("Filmes", (string)null);
                 });
 
             modelBuilder.Entity("CinemaWebAPI.Models.Gerente", b =>
@@ -108,7 +108,7 @@ namespace CinemaWebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Gerentes");
+                    b.ToTable("Gerentes", (string)null);
                 });
 
             modelBuilder.Entity("CinemaWebAPI.Models.Sessao", b =>
@@ -129,7 +129,7 @@ namespace CinemaWebAPI.Migrations
 
                     b.HasIndex("FilmeId");
 
-                    b.ToTable("Sessoes");
+                    b.ToTable("Sessoes", (string)null);
                 });
 
             modelBuilder.Entity("CinemaWebAPI.Models.Cinema", b =>
