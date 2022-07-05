@@ -20,6 +20,7 @@ builder.Services.AddDbContext<UserDbContext>(options => options
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddIdentity<IdentityUser<int>, IdentityRole<int>>().AddEntityFrameworkStores<UserDbContext>();
 builder.Services.AddScoped<CadastroService, CadastroService>();
+builder.Services.AddScoped<LoginService, LoginService>();
 
 var app = builder.Build();
 
