@@ -11,22 +11,22 @@ namespace UsuariosWebAPI.Controllers
 
     public class LoginController : ControllerBase
     {
-        private LoginService _service;
+        private LoginService _loginService;
 
         public LoginController(LoginService service)
         {
-            _service = service;
+            _loginService = service;
         }
 
         [HttpPost]
         public IActionResult LogarUsuario(LoginRequest loginRequest)
         {
-            Result resultado = _service.LogarUsuario(loginRequest);
+            Result resultado = _loginService.LogarUsuario(loginRequest);
             if (resultado.IsSuccess)
             {
-                return Ok();
+                return Ok(resultado.Successes.FirstOrDefault());
             }
-            return Unauthorized();
+            return Unauthorized(resultado.Errors.FirstOrDefault());
         }
 
 
