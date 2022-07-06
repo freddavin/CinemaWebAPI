@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using Microsoft.AspNetCore.Mvc;
+using UsuariosWebAPI.Requests;
 using UsuariosWebAPI.Services;
 using UsuariosWebAPI.ViewModels;
 
@@ -23,9 +24,21 @@ namespace UsuariosWebAPI.Controllers
             Result resultadoCadastro = _serviceCadastro.CadastrarUsuario(usuarioNovo);
             if (resultadoCadastro.IsSuccess)
             {
-                return Ok();
+                return Ok(resultadoCadastro.Successes.FirstOrDefault()); 
             }
             return StatusCode(500);
         }
+
+        [HttpGet("/Ativar")]
+        public IActionResult AtivarUsuario([FromQuery] AtivarUsuarioRequest request)
+        {
+            Result resultado = _serviceCadastro.AtivarUsuario(request);
+            if (resultado.IsSuccess)
+            {
+                return Ok(resultado.Successes.FirstOrDefault());
+            }
+            return StatusCode(500);
+        }
+
     }
 }

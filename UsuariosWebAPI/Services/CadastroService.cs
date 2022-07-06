@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using FluentResults;
 using Microsoft.AspNetCore.Identity;
-using UsuariosWebAPI.Context;
+using System.Text;
+using System.Web;
 using UsuariosWebAPI.Models;
+using UsuariosWebAPI.Requests;
 using UsuariosWebAPI.ViewModels;
 
 namespace UsuariosWebAPI.Services
@@ -11,11 +13,13 @@ namespace UsuariosWebAPI.Services
     {
         private UserManager<IdentityUser<int>> _userManager;
         private IMapper _mapper;
+        private EmailService _emailService;
 
-        public CadastroService(UserManager<IdentityUser<int>> userManager, IMapper mapper)
+        public CadastroService(UserManager<IdentityUser<int>> userManager, IMapper mapper, EmailService emailService)
         {
             _userManager = userManager;
             _mapper = mapper;
+            _emailService = emailService;
         }
 
         public Result CadastrarUsuario(UsuarioCreateViewModel usuarioNovo)
@@ -26,10 +30,27 @@ namespace UsuariosWebAPI.Services
             
             if (resultado.Result.Succeeded)
             {
-                return Result.Ok();
+                string codigoDeConfirmacao = _userManager.GenerateEmailConfirmationTokenAsync(usuarioIdentity).Result;
+                var encodedCodigo = HttpUtility.UrlEncode(codigoDeConfirmacao);
+                _emailService.EnviarEmail(new[] {usuario.Email}, "Link de Ativação do e-mail", usuarioIdentity.Id, encodedCodigo);
+
+                return Result.Ok().WithSuccess(codigoDeConfirmacao);
             }
             return Result.Fail("Falha ao cadastrar usuário.");
         }
 
+        public Result AtivarUsuario(AtivarUsuarioRequest request)
+        {
+            var usuarioIdentity = _userManager.Users.FirstOrDefault(u => u.Id == request.IdUsuario);
+            if (usuarioIdentity != null)
+            {
+                var resultadoIdentity = _userManager.ConfirmEmailAsync(usuarioIdentity, request.ChaveDeAtivacao);
+                if (resultadoIdentity.Result.Succeeded)
+                {
+                    return Result.Ok();
+                }
+            }
+            return Result.Fail("Não foi possível ativar o e-mail do usuario.");
+        }
     }
 }

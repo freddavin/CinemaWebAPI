@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using Microsoft.AspNetCore.Identity;
+using System.Text;
 using UsuariosWebAPI.Models;
 using UsuariosWebAPI.Requests;
 

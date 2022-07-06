@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 using UsuariosWebAPI.Requests;
 using UsuariosWebAPI.Services;
 
