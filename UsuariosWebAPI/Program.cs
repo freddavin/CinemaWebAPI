@@ -28,6 +28,8 @@ builder.Services.AddScoped<TokenService, TokenService>();
 builder.Services.AddScoped<LogoutService, LogoutService>();
 builder.Services.AddScoped<EmailService, EmailService>();
 
+builder.Configuration.AddUserSecrets<Program>();
+
 var app = builder.Build();
 
 
