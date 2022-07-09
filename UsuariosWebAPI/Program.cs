@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UsuariosWebAPI.Context;
+using UsuariosWebAPI.Models;
 using UsuariosWebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +19,7 @@ builder.Services.AddDbContext<UserDbContext>(options => options
                         .EnableSensitiveDataLogging());
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddIdentity<IdentityUser<int>, IdentityRole<int>>(options => options
+builder.Services.AddIdentity<CustomIdentityUser, IdentityRole<int>>(options => options
     .SignIn.RequireConfirmedEmail = true)
     .AddEntityFrameworkStores<UserDbContext>()
     .AddDefaultTokenProviders();
@@ -30,8 +31,8 @@ builder.Services.AddScoped<EmailService, EmailService>();
 
 builder.Configuration.AddUserSecrets<Program>();
 
-var app = builder.Build();
 
+var app = builder.Build();
 
 app.UseHttpsRedirection();
 

@@ -12,7 +12,10 @@ namespace UsuariosWebAPI.ViewModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
         [Required]
+        [DataType(DataType.Password)]
         [Compare("Password")]
         public string RePassword { get; set; }
+        [Required]
+        public DateTime DataDeNascimento { get; set; }
     }
 }

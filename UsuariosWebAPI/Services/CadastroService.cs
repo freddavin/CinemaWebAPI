@@ -11,11 +11,11 @@ namespace UsuariosWebAPI.Services
 {
     public class CadastroService
     {
-        private UserManager<IdentityUser<int>> _userManager;
+        private UserManager<CustomIdentityUser> _userManager;
         private IMapper _mapper;
         private EmailService _emailService;
 
-        public CadastroService(UserManager<IdentityUser<int>> userManager, IMapper mapper, EmailService emailService)
+        public CadastroService(UserManager<CustomIdentityUser> userManager, IMapper mapper, EmailService emailService)
         {
             _userManager = userManager;
             _mapper = mapper;
@@ -25,10 +25,12 @@ namespace UsuariosWebAPI.Services
         public Result CadastrarUsuario(UsuarioCreateViewModel usuarioNovo)
         {
             Usuario usuario = _mapper.Map<Usuario>(usuarioNovo);
-            IdentityUser<int> usuarioIdentity = _mapper.Map<IdentityUser<int>>(usuario);
-            Task<IdentityResult> resultado = _userManager.CreateAsync(usuarioIdentity, usuarioNovo.Password);
+            CustomIdentityUser usuarioIdentity = _mapper.Map<CustomIdentityUser>(usuario);
+            var resultado = _userManager.CreateAsync(usuarioIdentity, usuarioNovo.Password).Result;
+
+            var usuarioRoleResult = _userManager.AddToRoleAsync(usuarioIdentity, "regular").Result;
             
-            if (resultado.Result.Succeeded)
+            if (resultado.Succeeded)
             {
                 string codigoDeConfirmacao = _userManager.GenerateEmailConfirmationTokenAsync(usuarioIdentity).Result;
                 var encodedCodigo = HttpUtility.UrlEncode(codigoDeConfirmacao);

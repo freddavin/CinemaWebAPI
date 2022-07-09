@@ -9,10 +9,10 @@ namespace UsuariosWebAPI.Services
 {
     public class LoginService
     {
-        private SignInManager<IdentityUser<int>> _signInManager;
+        private SignInManager<CustomIdentityUser> _signInManager;
         private TokenService _tokenService;
 
-        public LoginService(SignInManager<IdentityUser<int>> signInManager, TokenService tokenService)
+        public LoginService(SignInManager<CustomIdentityUser> signInManager, TokenService tokenService)
         {
             _signInManager = signInManager;
             _tokenService = tokenService;
@@ -25,7 +25,7 @@ namespace UsuariosWebAPI.Services
             {
                 var identityUser = _signInManager.UserManager.Users
                     .First(u => u.NormalizedUserName == loginRequest.Username.ToUpper());
-                Token token = _tokenService.CriarToken(identityUser);
+                Token token = _tokenService.CriarToken(identityUser, _signInManager.UserManager.GetRolesAsync(identityUser).Result.FirstOrDefault());
                 return Result.Ok().WithSuccess(token.Value);
             }
             return Result.Fail("O login falhou.");
@@ -33,12 +33,10 @@ namespace UsuariosWebAPI.Services
 
         public Result SolicitarResetSenhaUsuario(SolicitarResetSenhaRequest request)
         {
-            IdentityUser<int>? identityUser = RecuperarUsuarioPorId(request.IdUsuario);
+            CustomIdentityUser? identityUser = RecuperarUsuarioPorId(request.IdUsuario);
             if (identityUser != null)
             {
                 string chaveDeAlteracaoDeSenha = _signInManager.UserManager.GeneratePasswordResetTokenAsync(identityUser).Result;
-                //var encodedToken = HttpUtility.UrlEncode(resultadoAlteracao);
-                //_emailService.EnviarEmail(new[] { usuario.Email }, "Link de Ativação do e-mail", usuarioIdentity.Id, encodedCodigo);
                 return Result.Ok().WithSuccess(chaveDeAlteracaoDeSenha);
             }
             return Result.Fail("A solicitação de reset de senha falhou.");
@@ -46,7 +44,7 @@ namespace UsuariosWebAPI.Services
 
         public Result AlterarSenhaUsuario(AlterarSenhaUsuarioRequest request)
         {
-            IdentityUser<int>? identityUser = RecuperarUsuarioPorId(request.IdUsuario);
+            CustomIdentityUser? identityUser = RecuperarUsuarioPorId(request.IdUsuario);
             if (identityUser != null)
             {
                 var resultadoIdentity = _signInManager.UserManager.ResetPasswordAsync(identityUser, request.ChaveDeAlteracaoDeSenha, request.NewPassword);
@@ -58,7 +56,7 @@ namespace UsuariosWebAPI.Services
             return Result.Fail("A alteração de senha falhou.");
         }
 
-        private IdentityUser<int>? RecuperarUsuarioPorId(int idUsuario)
+        private CustomIdentityUser? RecuperarUsuarioPorId(int idUsuario)
         {
             return _signInManager.UserManager.Users.FirstOrDefault(u => u.Id == idUsuario);
         }

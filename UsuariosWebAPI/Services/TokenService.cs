@@ -9,12 +9,14 @@ namespace UsuariosWebAPI.Services
 {
     public class TokenService
     {
-        public Token CriarToken(IdentityUser<int> usuario)
+        public Token CriarToken(CustomIdentityUser usuario, string role)
         {
             var atributosUsuario = new Claim[]
             {
                 new Claim("username", usuario.UserName),
-                new Claim("id", usuario.Id.ToString())
+                new Claim("id", usuario.Id.ToString()),
+                new Claim(ClaimTypes.Role, role),
+                new Claim(ClaimTypes.DateOfBirth, usuario.DataDeNascimento.ToString())
             };
 
             var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("0asdjas09djsa09djasdjsadajsd09asjd09sajcnzxn"));

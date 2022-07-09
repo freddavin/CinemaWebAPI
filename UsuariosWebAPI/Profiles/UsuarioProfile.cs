@@ -11,6 +11,7 @@ namespace UsuariosWebAPI.Profiles
         {
             CreateMap<UsuarioCreateViewModel, Usuario>();
             CreateMap<Usuario, IdentityUser<int>>();
+            CreateMap<Usuario, CustomIdentityUser>();
         }
     }
 }

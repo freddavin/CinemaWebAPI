@@ -5,7 +5,7 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CinemaWebAPI", "CinemaWebAPI\CinemaWebAPI.csproj", "{D84686AA-7DF6-4756-A27A-059C1E11353B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsuariosWebAPI", "UsuariosWebAPI\UsuariosWebAPI.csproj", "{4C91060B-82FB-41DF-B87B-7C8F8E9D2409}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsuariosWebAPI", "UsuariosWebAPI\UsuariosWebAPI.csproj", "{4C91060B-82FB-41DF-B87B-7C8F8E9D2409}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

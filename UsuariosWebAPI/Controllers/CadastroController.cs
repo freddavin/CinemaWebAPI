@@ -29,7 +29,7 @@ namespace UsuariosWebAPI.Controllers
             return StatusCode(500);
         }
 
-        [HttpGet("/Ativar")]
+        [HttpGet("/ativar")]
         public IActionResult AtivarUsuario([FromQuery] AtivarUsuarioRequest request)
         {
             Result resultado = _serviceCadastro.AtivarUsuario(request);

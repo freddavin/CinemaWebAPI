@@ -1,9 +1,7 @@
-﻿using AutoMapper;
-using CinemaWebAPI.Context;
-using CinemaWebAPI.Models;
-using CinemaWebAPI.Services;
+﻿using CinemaWebAPI.Services;
 using CinemaWebAPI.ViewModels;
 using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CinemaWebAPI.Controllers
@@ -21,6 +19,7 @@ namespace CinemaWebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public IActionResult AdicionarFilme([FromBody] FilmeCreateViewModel filmeCreateViewModel)
         {
             FilmeReadViewModel filmeReadViewModel = _filmeService.AdicionarFilme(filmeCreateViewModel);
@@ -29,6 +28,7 @@ namespace CinemaWebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin, regular", Policy = "IdadeMinima")]
         public IActionResult RecuperarFilmes([FromQuery] int? classificacaoEtaria = null)
         {
             List<FilmeReadViewModel> filmeReadViewModel = _filmeService.RecuperarFilmes(classificacaoEtaria);
